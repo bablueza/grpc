@@ -19,12 +19,14 @@ function main() {
     "localhost:8099",
     grpc.credentials.createInsecure()
   );
+  var call = client.ChatStream();
 
-  var user = "blue";
-  var meta = new grpc.Metadata();
-  meta.add('apikey', '12345678');
-  client.ChatFunc({ name: user }, meta,function (err, response) {
-    console.log("Service response :", response.result);
+  call.write(dataToSend);
+  call.on("data", function (st) {
+    console.log("Service stream :", st.result);
+  });
+  call.on("end", function () {
+    console.log("end:");
   });
 }
 console.log("begin");
